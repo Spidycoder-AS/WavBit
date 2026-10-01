@@ -1,45 +1,95 @@
-# WavBit
+<div align="center">
+  <h1>🎙️ WavBit</h1>
+  <p><strong>Next-Generation Data Transmission via Audio Frequencies</strong></p>
+  
+  [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+  [![Status: Beta](https://img.shields.io/badge/Status-Beta-success.svg)]()
+</div>
 
-**"Send data through sound."**
+<br />
 
-WavBit is an experimental web application that allows two nearby phones/laptops to transfer short text messages using SOUND between their speakers and microphones. It integrates the [ggwave](https://github.com/ggerganov/ggwave) library for actual data-over-sound transmission and the Gemini API for semantic message compression and reconstruction.
+## 🌟 Overview
 
-## Features
+**WavBit** is an innovative, experimental web application designed to transfer data seamlessly between nearby devices using entirely acoustic channels—no internet, Bluetooth, or NFC required. By leveraging device speakers and microphones, WavBit broadcasts short encoded payloads through precise audio frequencies. 
 
-- **Actual Audio Transmission:** Uses the Web Audio API and WebAssembly port of `ggwave` to transmit data as audible tones.
-- **AI Semantic Compression:** Uses Gemini to compress natural language into dense tokens (e.g., `MEET|TOMORROW|19:00|CAFE`) which fit better within the payload limits of audio transmission.
-- **AI Reconstruction:** Expands the received tokenized payload back into a natural sentence.
-- **Microphone Receiver:** Listens for the specific frequency markers and decodes the stream continuously.
+This project explores the bleeding edge of offline, secure proximity communication utilizing the powerful [ggwave](https://github.com/ggerganov/ggwave) library and cutting-edge LLM semantic compression.
 
-## Setup Instructions
+---
 
-1. **Install Dependencies:**
-   ```bash
-   npm install
-   ```
+## 🚀 Key Features
 
-2. **Add Gemini API Key:**
-   Rename `.env.example` to `.env` or create a `.env` file and add your key:
-   ```env
-   GEMINI_API_KEY="your_api_key_here"
-   ```
+* **Acoustic Data Transmission**: Securely broadcast and receive payloads using WebAssembly and the Web Audio API without traditional network connectivity.
+* **AI-Powered Semantic Compression**: Integrates Gemini API to heavily compress natural language strings into optimized data tokens (e.g., `MEET|TOMORROW|19:00|CAFE`) to fit bandwidth constraints.
+* **Real-time Acoustic Decoding**: Device microphones passively listen for specific frequency markers, actively decoding audio streams back into text instantaneously.
+* **Cross-Platform Compatibility**: Fully functional on any modern browser supporting the Web Audio API across desktop and mobile devices.
 
-3. **Start the Application:**
-   ```bash
-   npm run dev
-   ```
-   This will start both the Express backend API and the Vite frontend.
+---
 
-4. **Testing on Devices:**
-   - Open the application URL on **two devices** (e.g., your laptop and your phone, or two phones).
-   - *Note on Microphone Access:* Modern browsers require a secure context (HTTPS) or `localhost` to access `getUserMedia` (the microphone). If you are testing over a local network, you may need to use a tunneling service (like ngrok, Cloudflare Tunnels) or configure a local HTTPS certificate to enable microphone access on the receiving device.
-   
-5. **Usage Demo:**
-   - **Device A:** Tap **Send Message**, type "Meet me at the cafe at 7 PM", and press **Transmit via Sound**.
-   - **Device B:** Tap **Receive Message**, grant microphone permissions, and tap **Start Listening**.
-   - Place the devices near each other. Device A will play a sequence of tones, and Device B will capture and decode them into the original message!
+## 🛠️ Technology Stack
 
-## Important Notes
+* **Frontend Framework:** React 19 / Vite
+* **Styling:** Tailwind CSS / Motion (Framer Motion)
+* **Audio Processing:** `ggwave` (WASM integration)
+* **AI Integration:** Google GenAI SDK (Gemini)
+* **Backend Runtime:** Node.js / Express
 
-- **Volume & Environment:** Make sure the sender's volume is sufficiently loud, and background noise is minimized for the best reliability.
-- **Payload Limits:** Audio transmission is slow. WavBit uses the `ggwave` Fast Audible protocol, but short messages (under 30 characters) work best. This is why the AI compression step is highly recommended!
+---
+
+## ⚙️ Local Development Setup
+
+To run WavBit locally, ensure you have **Node.js (v22+)** installed.
+
+### 1. Clone the Repository
+```bash
+git clone https://github.com/Spidycoder-AS/WavBit.git
+cd WavBit
+```
+
+### 2. Install Dependencies
+```bash
+npm install
+```
+
+### 3. Environment Configuration
+Create a `.env` file from the example template and provide your Gemini API key:
+```bash
+cp .env.example .env
+```
+Add your key inside `.env`:
+```env
+GEMINI_API_KEY="your_api_key_here"
+```
+
+### 4. Start the Application
+Boot up both the Express backend API and the Vite frontend simultaneously:
+```bash
+npm run dev
+```
+
+---
+
+## 📡 Usage Guide
+
+To successfully transmit data, you'll need **two devices** capable of playing and recording audio. 
+
+> **Important:** Modern browsers require a secure context (`HTTPS` or `localhost`) for microphone access (`getUserMedia`). If testing over a local network, use a tunneling service (like [ngrok](https://ngrok.com/) or Cloudflare Tunnels) to provide an HTTPS endpoint for your secondary device.
+
+1. **On Device A (Transmitter):** Navigate to **Send Data**, type your message (e.g., *"Hello from the acoustic network"*), and initiate transmission.
+2. **On Device B (Receiver):** Navigate to **Receive Data**, grant microphone permissions, and tap **Start Listening**.
+3. Bring the devices within audible range. Device A will emit a frequency sequence, and Device B will instantly decode and display the message.
+
+---
+
+## 💡 Best Practices for Reliable Transmission
+
+* **Audio Clarity:** Ensure the transmitter's volume is appropriately loud.
+* **Environment:** A quiet environment with minimal ambient acoustic interference yields the highest decoding accuracy.
+* **Payload Size:** Due to the physical bandwidth limitations of acoustic transmission, keep payloads concise (ideally under 30 characters). AI Semantic compression is highly recommended to maximize efficiency.
+
+---
+
+## 📜 License
+
+WavBit is open-source software licensed under the [MIT License](LICENSE). 
+
+Designed and developed by [Spidycoder-AS](https://github.com/Spidycoder-AS).
