@@ -115,12 +115,21 @@ export function SendPage({ onBack }: SendPageProps) {
         </div>
         <div className="space-y-6 sm:space-y-8 flex flex-col w-full transition-all duration-500 md:justify-center flex-1">
           <div className="flex flex-col w-full">
-            <label className="block text-[11px] sm:text-xs font-semibold text-gray-400 uppercase tracking-widest mb-3 ml-1">
-              Payload Content
-            </label>
+            <div className="flex justify-between items-end mb-3 ml-1 mr-1">
+              <label className="block text-[11px] sm:text-xs font-semibold text-gray-400 uppercase tracking-widest">
+                Payload Content
+              </label>
+              <div className={`text-[11px] sm:text-xs font-bold tabular-nums tracking-widest transition-colors duration-300 ${
+                message.length < 90 ? 'text-emerald-400' : 
+                message.length < 125 ? 'text-amber-400' : 'text-rose-500'
+              }`}>
+                {message.length} / 132
+              </div>
+            </div>
             <textarea
               ref={textareaRef}
               value={message}
+              maxLength={132}
               onChange={(e) => setMessage(e.target.value)}
               disabled={status !== 'idle' && status !== 'error'}
               placeholder="E.g. Meet me tomorrow at 7 PM near the cafe."
