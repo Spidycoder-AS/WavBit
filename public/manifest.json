@@ -1,0 +1,16 @@
+{
+  "name": "WavBit",
+  "short_name": "WavBit",
+  "description": "Send data through sound using your device's speakers and microphones.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#020408",
+  "theme_color": "#020408",
+  "icons": [
+    {
+      "src": "/favicon.ico",
+      "sizes": "64x64 32x32 24x24 16x16",
+      "type": "image/x-icon"
+    }
+  ]
+}
