@@ -1,6 +1,21 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { ArrowLeft, Send, Volume2, CheckCircle2, Download, Play, Square } from 'lucide-react';
-import { motion } from 'motion/react';
+import { 
+  ArrowLeft, 
+  Volume2, 
+  CheckCircle2, 
+  Play, 
+  Square, 
+  Shield, 
+  Sparkles, 
+  Key, 
+  MapPin, 
+  MessageSquare, 
+  Trash2, 
+  Radio, 
+  AlertCircle,
+  RefreshCw
+} from 'lucide-react';
+import { motion, AnimatePresence } from 'motion/react';
 import { transmitMessage, generateWavBlob } from '../audio/ggwaveEncoder';
 import { AudioWaveform } from '../components/AudioWaveform';
 import { AppHeader } from '../components/AppHeader';
@@ -9,11 +24,15 @@ interface SendPageProps {
   onBack: () => void;
 }
 
+const PRESET_TEMPLATES = [
+  { label: 'Secret Key', icon: Key, text: 'KEY-S8P3I6D9Y' },
+  { label: 'Location', icon: MapPin, text: '26°52\'41.19"N, 94°38\'40.29"E' },
+  { label: 'Quick Note', icon: MessageSquare, text: 'Meet near ranghar at 8pm.' },
+];
+
 export function SendPage({ onBack }: SendPageProps) {
   const [message, setMessage] = useState('');
-  const [status, setStatus] = useState<'idle' | 'ready' | 'transmitting' | 'success' | 'error'>(
-    'idle'
-  );
+  const [status, setStatus] = useState<'idle' | 'transmitting' | 'success' | 'error'>('idle');
   const [compressedData, setCompressedData] = useState('');
   const [progress, setProgress] = useState(0);
   const [errorMsg, setErrorMsg] = useState('');
@@ -24,7 +43,7 @@ export function SendPage({ onBack }: SendPageProps) {
   useEffect(() => {
     if (textareaRef.current) {
       textareaRef.current.style.height = 'auto';
-      textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
+      textareaRef.current.style.height = `${Math.min(textareaRef.current.scrollHeight, 220)}px`;
     }
   }, [message]);
 
@@ -43,7 +62,7 @@ export function SendPage({ onBack }: SendPageProps) {
       setErrorMsg('');
       setStatus('transmitting');
 
-      let payload = message.trim();
+      const payload = message.trim();
       setCompressedData(payload);
 
       // Simple protocol wrapper
@@ -62,7 +81,7 @@ export function SendPage({ onBack }: SendPageProps) {
     } catch (err: any) {
       console.error(err);
       setStatus('error');
-      setErrorMsg(err.message || 'An error occurred');
+      setErrorMsg(err.message || 'Transmission failed. Check audio output permissions.');
     }
   };
 
@@ -99,163 +118,278 @@ export function SendPage({ onBack }: SendPageProps) {
     }
   };
 
+  const handleReset = () => {
+    setMessage('');
+    setStatus('idle');
+    setProgress(0);
+    setCompressedData('');
+    if (isPlayingAudio && audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current = null;
+      setIsPlayingAudio(false);
+    }
+  };
+
   return (
-    <div className="flex flex-col flex-1 w-full h-full relative overflow-hidden">
+    <div className="flex flex-col flex-1 w-full min-h-screen relative overflow-hidden bg-[#020408] text-white">
       <AppHeader title="Transmit Data" colorTheme="emerald" />
 
-      <main className="flex-1 overflow-y-auto px-4 sm:px-6 py-6 sm:py-8 pb-32 md:pb-48 lg:pb-56 w-full max-w-3xl mx-auto flex flex-col">
-        <div className="w-full flex items-start mb-6 shrink-0">
+      {/* Main Responsive Grid Container */}
+      <main className="flex-1 overflow-y-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 pb-36 w-full max-w-5xl mx-auto flex flex-col justify-start min-h-0">
+        
+        {/* Top Back Navigation & Security Pill Bar */}
+        <div className="w-full flex items-center justify-between mb-6 shrink-0">
           <button
             onClick={onBack}
-            className="flex items-center gap-2 px-3 py-2 -ml-3 text-gray-400 hover:text-white transition-colors rounded-xl hover:bg-white/5"
+            className="group flex items-center gap-2 px-3.5 py-2 -ml-3 text-gray-400 hover:text-white transition-all rounded-xl hover:bg-white/5 border border-transparent hover:border-white/10 cursor-pointer"
           >
-            <ArrowLeft size={20} />
-            <span className="text-sm font-medium tracking-wide uppercase">Back</span>
+            <ArrowLeft size={18} className="transition-transform group-hover:-translate-x-1" />
+            <span className="text-xs font-semibold tracking-wider uppercase">Back to Home</span>
           </button>
-        </div>
-        <div className="space-y-6 sm:space-y-8 flex flex-col w-full transition-all duration-500 md:justify-center flex-1">
-          <div className="flex flex-col w-full">
-            <div className="flex justify-between items-end mb-3 ml-1 mr-1">
-              <label className="block text-[11px] sm:text-xs font-semibold text-gray-400 uppercase tracking-widest">
-                Payload Content
-              </label>
-              <div className={`text-[11px] sm:text-xs font-bold tabular-nums tracking-widest transition-colors duration-300 ${
-                message.length < 90 ? 'text-emerald-400' : 
-                message.length < 125 ? 'text-amber-400' : 'text-rose-500'
-              }`}>
-                {message.length} / 132
-              </div>
-            </div>
-            <textarea
-              ref={textareaRef}
-              value={message}
-              maxLength={132}
-              onChange={(e) => setMessage(e.target.value)}
-              disabled={status !== 'idle' && status !== 'error'}
-              placeholder="E.g. Meet me tomorrow at 7 PM near the cafe."
-              className="w-full flex-1 md:flex-none min-h-[120px] max-h-[40dvh] bg-white/5 border border-white/10 rounded-3xl p-5 sm:p-6 text-white text-lg sm:text-xl leading-relaxed placeholder:text-white/20 focus:outline-none focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/50 resize-none overflow-y-auto transition-all disabled:opacity-50 shadow-inner backdrop-blur-md"
-            />
+
+          {/* Security Pill */}
+          <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-[11px] font-mono text-emerald-400">
+            <Shield size={12} />
+            <span>Acoustic Encoder Active</span>
           </div>
+        </div>
 
-          {status === 'error' && (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              className="text-center text-red-400 p-4 text-sm bg-red-500/10 rounded-2xl border border-red-500/20 backdrop-blur-sm"
-            >
-              {errorMsg}
-            </motion.div>
-          )}
+        {/* Dynamic Responsive Content Card Container */}
+        <div className="w-full flex flex-col items-center justify-start">
+          <AnimatePresence mode="wait">
+            {status !== 'success' ? (
+              <motion.div
+                key="send-form"
+                initial={{ opacity: 0, y: 15 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.98 }}
+                transition={{ duration: 0.3 }}
+                className="w-full grid grid-cols-1 lg:grid-cols-12 gap-6 items-start"
+              >
+                {/* Left Column: Message Input Area (7 cols on desktop) */}
+                <div className="lg:col-span-7 flex flex-col gap-4">
+                  <div className="p-5 sm:p-6 rounded-3xl bg-[#070b14]/80 border border-white/10 backdrop-blur-2xl shadow-[0_0_40px_rgba(16,185,129,0.08)] relative overflow-hidden">
+                    
+                    {/* Input Header & Character Counter */}
+                    <div className="flex items-center justify-between mb-3">
+                      <label className="text-[11px] sm:text-xs font-bold uppercase tracking-widest text-emerald-400 flex items-center gap-2">
+                        <Sparkles size={14} />
+                        <span>Payload Text</span>
+                      </label>
 
-          {(status === 'transmitting' || status === 'success') && (
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="space-y-4 sm:space-y-6"
-            >
-              <div className="p-4 sm:p-5 bg-blue-900/20 border border-blue-500/30 rounded-3xl backdrop-blur-xl">
-                <div className="flex items-center space-x-2 text-[10px] sm:text-xs text-blue-400 uppercase tracking-widest mb-2">
-                  <div
-                    className={`w-1.5 h-1.5 rounded-full bg-blue-500 ${status === 'transmitting' ? 'animate-pulse' : ''}`}
-                  ></div>
-                  <span>Transmitting Payload</span>
-                </div>
-                <div className="font-mono text-xs sm:text-sm text-blue-100 break-all">
-                  {compressedData}
-                </div>
-              </div>
-
-              <div className="bg-white/5 border border-white/10 rounded-3xl p-4 sm:p-6 backdrop-blur-xl">
-                <AudioWaveform isTransmitting={status === 'transmitting'} />
-
-                {status === 'transmitting' && (
-                  <div className="mt-6 flex flex-col items-center">
-                    <div className="text-4xl sm:text-5xl font-black tabular-nums tracking-tighter text-white">
-                      {Math.round(progress)}%
+                      <div className="flex items-center gap-3">
+                        {message.length > 0 && (
+                          <button
+                            onClick={() => setMessage('')}
+                            className="text-[11px] text-gray-400 hover:text-rose-400 transition-colors flex items-center gap-1 cursor-pointer"
+                          >
+                            <Trash2 size={12} />
+                            <span>Clear</span>
+                          </button>
+                        )}
+                        <span className={`text-xs font-mono font-bold tracking-wider px-2 py-0.5 rounded-full border ${
+                          message.length < 90 ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400' :
+                          message.length < 125 ? 'bg-amber-500/10 border-amber-500/20 text-amber-400' :
+                          'bg-rose-500/10 border-rose-500/20 text-rose-400'
+                        }`}>
+                          {message.length} / 132
+                        </span>
+                      </div>
                     </div>
-                    <div className="text-[10px] sm:text-xs text-blue-300/60 uppercase tracking-widest mt-1">
-                      Completion
+
+                    {/* Text Area */}
+                    <textarea
+                      ref={textareaRef}
+                      value={message}
+                      maxLength={132}
+                      onChange={(e) => setMessage(e.target.value)}
+                      disabled={status === 'transmitting'}
+                      placeholder="Type a secret message, password, or code to transmit..."
+                      className="w-full min-h-[140px] bg-white/[0.03] border border-white/10 focus:border-emerald-500/50 focus:ring-1 focus:ring-emerald-500/30 rounded-2xl p-4 sm:p-5 text-white text-base sm:text-lg leading-relaxed placeholder:text-gray-500 resize-none outline-none transition-all disabled:opacity-50"
+                    />
+
+                    {/* Quick Preset Templates */}
+                    <div className="mt-4 pt-3 border-t border-white/5">
+                      <span className="text-[10px] uppercase font-mono tracking-widest text-gray-400 block mb-2">
+                        Quick Templates
+                      </span>
+                      <div className="flex flex-wrap gap-2">
+                        {PRESET_TEMPLATES.map((tpl) => {
+                          const IconComp = tpl.icon;
+                          return (
+                            <button
+                              key={tpl.label}
+                              type="button"
+                              onClick={() => setMessage(tpl.text)}
+                              disabled={status === 'transmitting'}
+                              className="px-2.5 py-1.5 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] border border-white/10 text-xs text-gray-300 hover:text-white transition-all flex items-center gap-1.5 cursor-pointer active:scale-95 disabled:opacity-50"
+                            >
+                              <IconComp size={13} className="text-emerald-400" />
+                              <span>{tpl.label}</span>
+                            </button>
+                          );
+                        })}
+                      </div>
                     </div>
                   </div>
-                )}
 
-                {status === 'success' && (
-                  <div className="mt-6 flex flex-col items-center justify-center text-green-400 space-y-4">
-                    <div className="w-12 h-12 bg-green-500/20 rounded-full flex items-center justify-center">
-                      <CheckCircle2 size={24} className="text-green-400" />
+                  {/* Error Message Container */}
+                  {status === 'error' && (
+                    <motion.div
+                      initial={{ opacity: 0, scale: 0.95 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      className="p-4 bg-red-500/10 border border-red-500/20 rounded-2xl flex items-start gap-3 text-red-400 text-sm"
+                    >
+                      <AlertCircle size={18} className="shrink-0 mt-0.5" />
+                      <span>{errorMsg}</span>
+                    </motion.div>
+                  )}
+                </div>
+
+                {/* Right Column: Visualizer & Transmitter Stats (5 cols on desktop) */}
+                <div className="lg:col-span-5 flex flex-col gap-4">
+                  <div className="bg-[#070b14]/80 border border-white/10 rounded-3xl p-5 sm:p-6 backdrop-blur-2xl flex flex-col gap-4 shadow-[0_0_30px_rgba(0,0,0,0.5)]">
+                    
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-semibold uppercase tracking-wider text-gray-300 flex items-center gap-2">
+                        <Radio size={14} className="text-emerald-400" />
+                        Acoustic Signal Waveform
+                      </span>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                        {status === 'transmitting' ? 'TRANSMITTING' : 'READY'}
+                      </span>
                     </div>
-                    <span className="text-[11px] sm:text-xs font-bold uppercase tracking-widest">
-                      Transmission Complete
-                    </span>
+
+                    {/* Real-time Audio Waveform Canvas */}
+                    <div className="h-32 w-full rounded-2xl bg-[#02050c] border border-white/10 overflow-hidden relative">
+                      <AudioWaveform isTransmitting={status === 'transmitting'} />
+                    </div>
+
+                    {/* Progress indicator during transmission */}
+                    {status === 'transmitting' && (
+                      <div className="py-2 flex flex-col items-center justify-center">
+                        <div className="text-3xl font-black font-mono tracking-tighter text-emerald-400">
+                          {progress}%
+                        </div>
+                        <div className="w-full bg-white/10 h-1.5 rounded-full overflow-hidden mt-2">
+                          <div 
+                            className="bg-emerald-400 h-full transition-all duration-150"
+                            style={{ width: `${progress}%` }}
+                          />
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Signal Metrics */}
+                    <div className="grid grid-cols-3 gap-2 pt-1 text-center">
+                      <div className="p-2.5 rounded-xl bg-white/[0.03] border border-white/5 flex flex-col items-center">
+                        <span className="text-[9px] uppercase tracking-wider text-gray-400">Protocol</span>
+                        <span className="text-xs font-bold font-mono text-white mt-0.5">GGWave FSK</span>
+                      </div>
+                      <div className="p-2.5 rounded-xl bg-white/[0.03] border border-white/5 flex flex-col items-center">
+                        <span className="text-[9px] uppercase tracking-wider text-gray-400">Sample Rate</span>
+                        <span className="text-xs font-bold font-mono text-emerald-400 mt-0.5">48 kHz</span>
+                      </div>
+                      <div className="p-2.5 rounded-xl bg-white/[0.03] border border-white/5 flex flex-col items-center">
+                        <span className="text-[9px] uppercase tracking-wider text-gray-400">Security</span>
+                        <span className="text-xs font-bold font-mono text-teal-400 mt-0.5">Air-Gapped</span>
+                      </div>
+                    </div>
                   </div>
-                )}
-              </div>
-            </motion.div>
-          )}
+                </div>
+              </motion.div>
+            ) : (
+              /* Success View Card */
+              <motion.div
+                key="send-success"
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.95 }}
+                transition={{ duration: 0.4 }}
+                className="w-full max-w-2xl bg-[#070b14]/90 border-2 border-emerald-500/30 rounded-3xl p-6 sm:p-8 space-y-6 backdrop-blur-2xl shadow-[0_0_60px_rgba(16,185,129,0.15)] relative overflow-hidden"
+              >
+                {/* Header */}
+                <div className="flex items-center gap-3 pb-5 border-b border-white/10">
+                  <div className="w-12 h-12 rounded-2xl bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center text-emerald-400">
+                    <CheckCircle2 size={24} />
+                  </div>
+                  <div>
+                    <h3 className="text-base sm:text-lg font-bold text-white">
+                      Payload Transmitted Successfully
+                    </h3>
+                    <p className="text-xs text-emerald-400 font-mono">
+                      Acoustic Sound Signal Broadcasted
+                    </p>
+                  </div>
+                </div>
+
+                {/* Transmitted Content */}
+                <div className="py-4 px-5 rounded-2xl bg-white/[0.03] border border-white/10">
+                  <div className="text-[10px] text-gray-400 font-bold tracking-widest uppercase mb-2">
+                    Transmitted Message
+                  </div>
+                  <div className="text-xl sm:text-2xl font-medium text-white break-words leading-relaxed select-text">
+                    "{compressedData}"
+                  </div>
+                </div>
+
+                {/* Note */}
+                <p className="text-xs text-gray-400 leading-relaxed text-center">
+                  Make sure the target receiving device had its microphone active during playback. You can replay the audio signal below if needed.
+                </p>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
       </main>
 
-      {/* Fixed Bottom Action Bar */}
-      <div className="fixed bottom-0 left-0 right-0 p-4 sm:p-6 bg-gradient-to-t from-[#020408] via-[#020408]/90 to-transparent z-20">
-        <div className="max-w-2xl mx-auto w-full flex items-center gap-3">
-          {status === 'success' && (
-            <motion.button
-              layout
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ type: 'spring', bounce: 0.2, duration: 0.6 }}
-              onClick={handlePlayAudio}
-              className={`flex-1 py-5 rounded-3xl font-bold text-[15px] sm:text-sm tracking-widest uppercase active:scale-[0.98] flex items-center justify-center space-x-2 border overflow-hidden whitespace-nowrap
-                ${
+      {/* Fixed Bottom Action Bar with Neo-Brutalist Push-into-Shadow Buttons */}
+      <div className="fixed bottom-0 left-0 right-0 p-4 sm:p-6 bg-gradient-to-t from-[#020408] via-[#020408]/95 to-transparent z-30 border-t border-white/5 backdrop-blur-xl">
+        <div className="max-w-md mx-auto w-full flex items-center gap-3">
+          {status === 'success' ? (
+            <>
+              <motion.button
+                whileTap={{ x: 3, y: 3, boxShadow: '0px 0px 0px #8b5cf6' }}
+                transition={{ duration: 0.08, ease: 'easeOut' }}
+                onClick={handlePlayAudio}
+                className={`flex-1 py-3.5 rounded-xl font-bold text-sm tracking-wider uppercase transition-all flex items-center justify-center gap-2 border cursor-pointer ${
                   isPlayingAudio
-                    ? 'bg-purple-500/20 text-purple-400 border-purple-500/50 hover:bg-purple-500/30'
-                    : 'bg-blue-500/10 text-blue-400 border-blue-500/20 hover:text-blue-300'
+                    ? 'bg-purple-600 text-white border-purple-400 shadow-[3px_3px_0px_0px_#8b5cf6]'
+                    : 'bg-purple-500/20 text-purple-300 border-purple-500/40 hover:bg-purple-500/30 shadow-[3px_3px_0px_0px_#8b5cf6]'
                 }`}
+              >
+                {isPlayingAudio ? <Square size={16} fill="currentColor" /> : <Play size={16} fill="currentColor" />}
+                <span>{isPlayingAudio ? 'Stop' : 'Replay'}</span>
+              </motion.button>
+
+              <motion.button
+                whileTap={{ x: 3, y: 3, boxShadow: '0px 0px 0px #10b981' }}
+                transition={{ duration: 0.08, ease: 'easeOut' }}
+                onClick={handleReset}
+                className="flex-1 py-3.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-bold text-sm tracking-wider uppercase shadow-[3px_3px_0px_0px_#10b981] border border-emerald-300 flex items-center justify-center gap-2 cursor-pointer"
+              >
+                <RefreshCw size={16} />
+                <span>Send New</span>
+              </motion.button>
+            </>
+          ) : (
+            <motion.button
+              whileTap={{ x: 3, y: 3, boxShadow: '0px 0px 0px #10b981' }}
+              transition={{ duration: 0.08, ease: 'easeOut' }}
+              onClick={handleTransmit}
+              disabled={!message.trim() || status === 'transmitting'}
+              className="w-full py-3.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-bold text-sm sm:text-base tracking-wider uppercase shadow-[3px_3px_0px_0px_#10b981] border border-emerald-300 flex items-center justify-center gap-2 cursor-pointer disabled:opacity-40 disabled:pointer-events-none"
             >
-              {isPlayingAudio ? (
-                <Square size={20} fill="currentColor" className="shrink-0" />
+              {status === 'transmitting' ? (
+                <span>Transmitting...</span>
               ) : (
-                <Play size={20} fill="currentColor" className="shrink-0" />
+                <>
+                  <Volume2 size={20} />
+                  <span>Transmit via Sound</span>
+                </>
               )}
-              <span className="shrink-0">{isPlayingAudio ? 'Stop' : 'Play Audio'}</span>
             </motion.button>
           )}
-
-          <motion.button
-            layout
-            transition={{ type: 'spring', bounce: 0.2, duration: 0.6 }}
-            onClick={
-              status === 'success'
-                ? () => {
-                    setMessage('');
-                    setStatus('idle');
-                    setProgress(0);
-                    setCompressedData('');
-                    if (isPlayingAudio && audioRef.current) {
-                      audioRef.current.pause();
-                      audioRef.current = null;
-                      setIsPlayingAudio(false);
-                    }
-                  }
-                : handleTransmit
-            }
-            disabled={
-              !message.trim() || (status !== 'idle' && status !== 'error' && status !== 'success')
-            }
-            className={`flex-1 py-5 rounded-3xl text-white font-bold text-[15px] sm:text-sm tracking-widest uppercase shadow-lg transition-all active:scale-[0.98] disabled:opacity-50 flex items-center justify-center space-x-3
-              ${status === 'success' ? 'bg-white/10 hover:bg-white/20 shadow-white/5 border border-white/10' : 'bg-blue-600 hover:bg-blue-500 shadow-blue-600/30'}`}
-          >
-            {status === 'success' ? (
-              <span className="shrink-0">Send Another</span>
-            ) : status === 'transmitting' ? (
-              <span className="shrink-0">Transmitting...</span>
-            ) : (
-              <>
-                <Volume2 size={22} className="shrink-0" />
-                <span className="shrink-0">Transmit via Sound</span>
-              </>
-            )}
-          </motion.button>
         </div>
       </div>
     </div>

@@ -1,7 +1,7 @@
 {
   "name": "WavBit",
   "private": true,
-  "version": "1.2.6",
+  "version": "1.2.8",
   "author": "spidycoder",
   "license": "MIT",
   "type": "module",
