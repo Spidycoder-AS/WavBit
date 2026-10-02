@@ -4,6 +4,7 @@ import { Radio, Mic, Volume2, Zap, WifiOff, History } from 'lucide-react';
 import { HugeiconsIcon } from '@hugeicons/react';
 import { AiSpeechIcon } from '@hugeicons/core-free-icons';
 import { AppHeader } from '../components/AppHeader';
+import { SeoSection } from '../components/SeoSection';
 
 interface LandingPageProps {
   onStartSend: () => void;
@@ -17,7 +18,7 @@ export function LandingPage({ onStartSend, onStartReceive, onViewHistory }: Land
       <AppHeader title="SM1-BETA" />
 
       {/* Hero Content */}
-      <main className="flex-1 flex flex-col justify-center px-4 sm:px-6 py-12 sm:py-20 relative z-10 max-w-4xl mx-auto w-full min-h-0">
+      <main className="flex-1 flex flex-col justify-center px-4 sm:px-6 py-12 sm:py-20 relative z-10 max-w-5xl mx-auto w-full min-h-0">
         <div className="text-center space-y-6 sm:space-y-8 mb-10">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -88,8 +89,8 @@ export function LandingPage({ onStartSend, onStartReceive, onViewHistory }: Land
           </motion.div>
         </div>
 
-        {/* History Section for Mobile */}
-        <div className="mt-auto pt-10 border-t border-white/5 w-full">
+        {/* History Section */}
+        <div className="mt-1 pt-10 border-t border-white/5 w-full">
           <h3 className="text-sm font-semibold text-gray-400 tracking-widest uppercase mb-4 sm:mb-6 flex items-center justify-center space-x-2">
             <History size={16} />
             <span>Transmission History</span>
@@ -156,7 +157,11 @@ export function LandingPage({ onStartSend, onStartReceive, onViewHistory }: Land
             }
           })()}
         </div>
+
+        {/* SEO Content Section right after Transmission History */}
+        <SeoSection />
       </main>
     </div>
   );
 }
+

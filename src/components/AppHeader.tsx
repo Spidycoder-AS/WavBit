@@ -1,7 +1,5 @@
 import React from 'react';
 import { ArrowLeft } from 'lucide-react';
-import { HugeiconsIcon } from '@hugeicons/react';
-import { AiSpeechIcon } from '@hugeicons/core-free-icons';
 
 export type HeaderColorTheme = 'blue' | 'emerald' | 'cyan' | 'gray';
 
@@ -50,26 +48,32 @@ export function AppHeader({ title, rightContent, colorTheme = 'blue' }: AppHeade
   const t = themeClasses[colorTheme];
 
   return (
-    <header className="relative z-20 flex items-center justify-between px-4 sm:px-10 py-4 sm:py-6 border-b border-white/5 bg-black/40 backdrop-blur-xl sticky top-0 w-full">
-      <div className="flex items-center gap-2 sm:gap-4">
-        <div className="flex items-center gap-2 sm:gap-3">
-          <div className="w-6 h-6 sm:w-8 sm:h-8 rounded-lg bg-gradient-to-tr from-blue-500 to-purple-600 flex items-center justify-center shadow-lg shadow-blue-500/20 shrink-0">
-            <HugeiconsIcon icon={AiSpeechIcon} className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-white animate-pulse" strokeWidth={2.5} />
+    <>
+      <header className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-4 sm:px-10 py-4 sm:py-5 border-b border-white/10 bg-[#020408]/85 backdrop-blur-xl w-full transition-all">
+        <div className="flex items-center gap-2 sm:gap-4">
+          <div className="flex items-center gap-2 sm:gap-3">
+            <img 
+              src="/WavBit-logo.png" 
+              alt="WavBit Logo" 
+              className="w-8 h-8 sm:w-10 sm:h-10 object-contain drop-shadow-[0_0_8px_rgba(59,130,246,0.3)]" 
+            />
+            <span className="text-lg sm:text-2xl font-black tracking-tighter text-white">
+              Wav<span className="text-blue-400">Bit</span>
+            </span>
           </div>
-          <span className="text-lg sm:text-2xl font-black tracking-tighter text-white">
-            Wav<span className="text-blue-400">Bit</span>
-          </span>
         </div>
-      </div>
-      <div className="flex items-center gap-2 sm:gap-4">
-        <div className={`flex items-center gap-1.5 sm:gap-2 px-2 sm:px-3 py-1 ${t.bg} border ${t.border} ${t.pillShadow} rounded-full shrink-0 max-w-[120px] sm:max-w-none truncate transition-colors duration-500`}>
-          <div className={`w-1.5 h-1.5 ${t.dot} rounded-full ${t.dotShadow} shrink-0`}></div>
-          <span className={`text-[9px] sm:text-[10px] font-mono uppercase tracking-widest ${t.text} truncate transition-colors duration-500`}>
-            {title}
-          </span>
+        <div className="flex items-center gap-2 sm:gap-4">
+          <div className={`flex items-center gap-1.5 sm:gap-2 px-2 sm:px-3 py-1 ${t.bg} border ${t.border} ${t.pillShadow} rounded-full shrink-0 max-w-[120px] sm:max-w-none truncate transition-colors duration-500`}>
+            <div className={`w-1.5 h-1.5 ${t.dot} rounded-full ${t.dotShadow} shrink-0`}></div>
+            <span className={`text-[9px] sm:text-[10px] font-mono uppercase tracking-widest ${t.text} truncate transition-colors duration-500`}>
+              {title}
+            </span>
+          </div>
+          {rightContent}
         </div>
-        {rightContent}
-      </div>
-    </header>
+      </header>
+      {/* Spacer element to reserve header height so page content starts below the fixed header */}
+      <div className="h-[65px] sm:h-[73px] shrink-0 w-full pointer-events-none" aria-hidden="true" />
+    </>
   );
 }
