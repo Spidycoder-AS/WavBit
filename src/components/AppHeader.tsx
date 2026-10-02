@@ -49,23 +49,27 @@ export function AppHeader({ title, rightContent, colorTheme = 'blue' }: AppHeade
 
   return (
     <>
-      <header className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-4 sm:px-10 py-4 sm:py-5 border-b border-white/10 bg-[#020408]/85 backdrop-blur-xl w-full transition-all">
-        <div className="flex items-center gap-2 sm:gap-4">
-          <div className="flex items-center gap-2 sm:gap-3">
-            <img 
-              src="/WavBit-logo.png" 
-              alt="WavBit Logo" 
-              className="w-8 h-8 sm:w-10 sm:h-10 object-contain drop-shadow-[0_0_8px_rgba(59,130,246,0.3)]" 
+      <header className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-4 sm:px-10 h-16 sm:h-20 border-b border-white/10 bg-[#020408]/85 backdrop-blur-xl w-full transition-all">
+        <div className="flex items-center h-full gap-2 sm:gap-4">
+          <div className="flex items-center h-full">
+            <img
+              src="/WavBit-logo.png"
+              alt="WavBit Logo"
+              className="h-full w-auto p-[6px] object-contain drop-shadow-[0_0_12px_rgba(59,130,246,0.4)]"
             />
-            <span className="text-lg sm:text-2xl font-black tracking-tighter text-white">
+            <span className="text-2xl sm:text-3xl md:text-4xl font-black tracking-tighter text-white">
               Wav<span className="text-blue-400">Bit</span>
             </span>
           </div>
         </div>
         <div className="flex items-center gap-2 sm:gap-4">
-          <div className={`flex items-center gap-1.5 sm:gap-2 px-2 sm:px-3 py-1 ${t.bg} border ${t.border} ${t.pillShadow} rounded-full shrink-0 max-w-[120px] sm:max-w-none truncate transition-colors duration-500`}>
-            <div className={`w-1.5 h-1.5 ${t.dot} rounded-full ${t.dotShadow} shrink-0`}></div>
-            <span className={`text-[9px] sm:text-[10px] font-mono uppercase tracking-widest ${t.text} truncate transition-colors duration-500`}>
+          <div
+            className={`flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-3 py-1 sm:py-1.5 ${t.bg} border ${t.border} ${t.pillShadow} rounded-full shrink-0 max-w-[130px] sm:max-w-none truncate transition-colors duration-500`}
+          >
+            <div className={`w-2 h-2 ${t.dot} rounded-full ${t.dotShadow} shrink-0`}></div>
+            <span
+              className={`text-[10px] sm:text-[11px] font-mono uppercase tracking-widest ${t.text} truncate transition-colors duration-500`}
+            >
               {title}
             </span>
           </div>
@@ -73,7 +77,10 @@ export function AppHeader({ title, rightContent, colorTheme = 'blue' }: AppHeade
         </div>
       </header>
       {/* Spacer element to reserve header height so page content starts below the fixed header */}
-      <div className="h-[65px] sm:h-[73px] shrink-0 w-full pointer-events-none" aria-hidden="true" />
+      <div
+        className="h-[64px] sm:h-[80px] shrink-0 w-full pointer-events-none"
+        aria-hidden="true"
+      />
     </>
   );
 }
