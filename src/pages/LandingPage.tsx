@@ -1,6 +1,16 @@
 import React from 'react';
 import { motion } from 'motion/react';
-import { Radio, Mic, Volume2, Zap, WifiOff, History, Shield, Waves, ArrowRight } from 'lucide-react';
+import {
+  Radio,
+  Mic,
+  Volume2,
+  Zap,
+  WifiOff,
+  History,
+  Shield,
+  Waves,
+  ArrowRight,
+} from 'lucide-react';
 import { AppHeader } from '../components/AppHeader';
 import { SeoSection } from '../components/SeoSection';
 import { SoundSimulatorCard } from '../components/SoundSimulatorCard';
@@ -18,13 +28,10 @@ export function LandingPage({ onStartSend, onStartReceive, onViewHistory }: Land
 
       {/* Hero Section Container */}
       <main className="flex-1 flex flex-col justify-center px-4 sm:px-6 lg:px-8 py-8 sm:py-14 lg:py-16 relative z-10 max-w-7xl mx-auto w-full min-h-0">
-        
         {/* Main Grid: Responsive 2-column layout on Desktop (lg), stacked on Tablet/Mobile */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center mb-12 sm:mb-16">
-          
           {/* Column 1: Text Content & Action Buttons */}
           <div className="lg:col-span-7 flex flex-col items-center lg:items-start text-center lg:text-left space-y-6 sm:space-y-8">
-            
             {/* Air-Gap Badge */}
             <motion.div
               initial={{ opacity: 0, y: 15 }}
@@ -56,7 +63,8 @@ export function LandingPage({ onStartSend, onStartReceive, onViewHistory }: Land
               transition={{ duration: 0.7, delay: 0.2 }}
               className="text-base sm:text-lg md:text-xl text-gray-300 max-w-2xl leading-relaxed px-1 sm:px-0"
             >
-              Transfer short text messages between nearby devices using only built-in speakers and microphones. No Wi-Fi, Bluetooth, or cellular internet required.
+              Transfer short text messages between nearby devices using only built-in speakers and
+              microphones. No Wi-Fi, Bluetooth, or cellular internet required.
             </motion.p>
 
             {/* Action Buttons */}
@@ -64,23 +72,43 @@ export function LandingPage({ onStartSend, onStartReceive, onViewHistory }: Land
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.3 }}
-              className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 pt-2 sm:pt-4 w-full"
+              className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-3 sm:gap-4 pt-2 sm:pt-4 w-full"
             >
-              <button
+              {/* Send Message Button (Cyan/Blue Neo-Brutalism - Pushed into Shadow Tap) */}
+              <motion.button
+                whileTap={{
+                  x: 3,
+                  y: 3,
+                  boxShadow: '0px 0px 0px #06b6d4, 0 0 10px rgba(6,182,212,0.2)',
+                }}
+                transition={{ duration: 0.08, ease: 'easeOut' }}
                 onClick={onStartSend}
-                className="w-full sm:w-auto px-8 py-4 sm:py-4 rounded-2xl bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white font-bold text-sm tracking-wider uppercase transition-all duration-300 hover:scale-[1.02] active:scale-95 flex items-center justify-center space-x-3 shadow-lg shadow-blue-600/30 cursor-pointer"
+                className="group relative w-full sm:w-auto max-w-xs sm:max-w-none px-5 py-2.5 sm:px-6 sm:py-3 rounded-xl sm:rounded-2xl bg-gradient-to-r from-blue-600 via-cyan-500 to-blue-600 text-white font-extrabold text-xs sm:text-sm tracking-wider uppercase border-2 border-cyan-300 shadow-[3px_3px_0px_#06b6d4,0_0_18px_rgba(6,182,212,0.3)] hover:brightness-110 flex items-center justify-center space-x-2.5 cursor-pointer overflow-hidden select-none touch-manipulation [webkit-tap-highlight-color:transparent]"
               >
-                <Volume2 size={20} />
-                <span>Send Message</span>
-                <ArrowRight size={16} className="opacity-70" />
-              </button>
-              <button
+                <div className="p-1 rounded-lg bg-black/25 border border-white/20">
+                  <Volume2 size={16} className="text-cyan-200" />
+                </div>
+                <span className="drop-shadow-[0_1px_2px_rgba(0,0,0,0.4)]">Send Message</span>
+                <ArrowRight size={16} className="text-cyan-200" />
+              </motion.button>
+
+              {/* Receive Message Button (Magenta/Purple Neo-Brutalism - Pushed into Shadow Tap) */}
+              <motion.button
+                whileTap={{
+                  x: 3,
+                  y: 3,
+                  boxShadow: '0px 0px 0px #d946ef, 0 0 10px rgba(217,70,239,0.2)',
+                }}
+                transition={{ duration: 0.08, ease: 'easeOut' }}
                 onClick={onStartReceive}
-                className="w-full sm:w-auto px-8 py-4 sm:py-4 rounded-2xl bg-white/5 text-white font-bold text-sm tracking-wider uppercase border border-white/10 transition-all duration-300 hover:bg-white/10 hover:border-white/20 hover:scale-[1.02] active:scale-95 flex items-center justify-center space-x-3 backdrop-blur-md cursor-pointer"
+                className="group relative w-full sm:w-auto max-w-xs sm:max-w-none px-5 py-2.5 sm:px-6 sm:py-3 rounded-xl sm:rounded-2xl bg-gradient-to-r from-purple-700 via-fuchsia-600 to-purple-800 text-white font-extrabold text-xs sm:text-sm tracking-wider uppercase border-2 border-fuchsia-300 shadow-[3px_3px_0px_#d946ef,0_0_18px_rgba(217,70,239,0.3)] hover:brightness-110 flex items-center justify-center space-x-2.5 cursor-pointer overflow-hidden select-none touch-manipulation [webkit-tap-highlight-color:transparent]"
               >
-                <Mic size={20} />
-                <span>Receive Message</span>
-              </button>
+                <div className="p-1 rounded-lg bg-black/25 border border-white/20">
+                  <Mic size={16} className="text-fuchsia-200" />
+                </div>
+                <span className="drop-shadow-[0_1px_2px_rgba(0,0,0,0.4)]">Receive Message</span>
+                <Radio size={16} className="text-fuchsia-200" />
+              </motion.button>
             </motion.div>
 
             {/* Feature Highlights Pills */}
@@ -129,8 +157,12 @@ export function LandingPage({ onStartSend, onStartReceive, onViewHistory }: Land
               return (
                 <div className="text-center py-6 px-4 rounded-2xl bg-white/[0.02] border border-white/5 max-w-xl mx-auto">
                   <Waves size={28} className="mx-auto text-gray-600 mb-2 opacity-50" />
-                  <p className="text-sm text-gray-500 font-medium">No acoustic transmissions recorded yet.</p>
-                  <p className="text-xs text-gray-600 mt-1">Send or receive your first sound message above!</p>
+                  <p className="text-sm text-gray-500 font-medium">
+                    No acoustic transmissions recorded yet.
+                  </p>
+                  <p className="text-xs text-gray-600 mt-1">
+                    Send or receive your first sound message above!
+                  </p>
                 </div>
               );
             try {
@@ -139,8 +171,12 @@ export function LandingPage({ onStartSend, onStartReceive, onViewHistory }: Land
                 return (
                   <div className="text-center py-6 px-4 rounded-2xl bg-white/[0.02] border border-white/5 max-w-xl mx-auto">
                     <Waves size={28} className="mx-auto text-gray-600 mb-2 opacity-50" />
-                    <p className="text-sm text-gray-500 font-medium">No acoustic transmissions recorded yet.</p>
-                    <p className="text-xs text-gray-600 mt-1">Send or receive your first sound message above!</p>
+                    <p className="text-sm text-gray-500 font-medium">
+                      No acoustic transmissions recorded yet.
+                    </p>
+                    <p className="text-xs text-gray-600 mt-1">
+                      Send or receive your first sound message above!
+                    </p>
                   </div>
                 );
               return (
@@ -158,7 +194,9 @@ export function LandingPage({ onStartSend, onStartReceive, onViewHistory }: Land
                           <div className="flex items-start gap-3.5 w-full">
                             <div
                               className={`mt-0.5 p-2.5 rounded-xl ${
-                                item.type === 'sent' ? 'bg-purple-500/20 text-purple-400 border border-purple-500/30' : 'bg-blue-500/20 text-blue-400 border border-blue-500/30'
+                                item.type === 'sent'
+                                  ? 'bg-purple-500/20 text-purple-400 border border-purple-500/30'
+                                  : 'bg-blue-500/20 text-blue-400 border border-blue-500/30'
                               }`}
                             >
                               {item.type === 'sent' ? <Volume2 size={18} /> : <Mic size={18} />}
@@ -166,7 +204,9 @@ export function LandingPage({ onStartSend, onStartReceive, onViewHistory }: Land
                             <div className="flex-1 min-w-0">
                               <div className="flex items-center justify-between mb-1">
                                 <div className="text-[10px] font-bold uppercase tracking-widest text-gray-400 flex items-center gap-1.5">
-                                  <span className={`w-1.5 h-1.5 rounded-full ${item.type === 'sent' ? 'bg-purple-400' : 'bg-blue-400'}`}></span>
+                                  <span
+                                    className={`w-1.5 h-1.5 rounded-full ${item.type === 'sent' ? 'bg-purple-400' : 'bg-blue-400'}`}
+                                  ></span>
                                   {item.type === 'sent' ? 'Sent Signal' : 'Received Signal'}
                                 </div>
                                 <div className="text-[11px] text-gray-500 font-mono">
